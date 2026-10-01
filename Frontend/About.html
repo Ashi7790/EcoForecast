@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="About the EcoForecast project: energy consumption forecasting using time-series machine learning">
+<title>About | EcoForecast</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,800;1,9..144,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--primary:#7d123f;--dark:#590c2d;--accent:#a51c58;--rose:#d75b91;--soft:#f8c9db;--pink:#fff0f5;--bg:#fff7fa;--text:#30232a;--muted:#786873;--border:#f1dce6;--shadow:0 14px 40px rgba(125,18,63,.10);--serif:"Fraunces",Georgia,serif;--sans:"Plus Jakarta Sans","Segoe UI",Arial,sans-serif}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);line-height:1.65}
+a{text-decoration:none;color:inherit}
+a:focus-visible,button:focus-visible{outline:3px solid var(--rose);outline-offset:3px}
+.container{width:min(1180px,92%);margin:auto}
+
+/* Header */
+header{background:var(--primary);color:#fff;position:sticky;top:0;z-index:50;box-shadow:0 4px 18px rgba(55,0,22,.18)}
+nav{min-height:74px;display:flex;align-items:center;justify-content:space-between;gap:24px}
+.logo{display:flex;align-items:center;gap:10px;font-family:var(--serif);font-size:1.6rem;font-weight:800;letter-spacing:-.5px}
+.logo span{color:#ffc1d9}
+.logo svg{width:30px;height:30px}
+.nav-links{display:flex;align-items:center;gap:30px;list-style:none}
+.nav-links a{font-size:.95rem;font-weight:600;color:#fff1f6;transition:color .2s}
+.nav-links a:hover,.nav-links a.active{color:#ffc1d9}
+.nav-links a.active{border-bottom:2px solid #ffc1d9;padding-bottom:3px}
+.menu-toggle{display:none;border:1px solid rgba(255,255,255,.45);color:#fff;background:transparent;border-radius:8px;font-size:1.4rem;width:42px;height:42px;cursor:pointer}
+
+/* Banner */
+.banner{position:relative;overflow:hidden;padding:60px 0 120px;background:radial-gradient(circle at 88% 15%,rgba(248,201,219,.8),transparent 32%),radial-gradient(circle at 5% 90%,rgba(215,91,145,.18),transparent 30%),linear-gradient(120deg,#fff7fa,#fff0f5 55%,#ffe2ed)}
+.banner .grid-bg{position:absolute;inset:0;background-image:linear-gradient(rgba(125,18,63,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(125,18,63,.05) 1px,transparent 1px);background-size:44px 44px;mask-image:radial-gradient(ellipse at 75% 40%,#000,transparent 70%);-webkit-mask-image:radial-gradient(ellipse at 75% 40%,#000,transparent 70%)}
+.banner-inner{position:relative;z-index:1;max-width:820px}
+.eyebrow{display:inline-flex;align-items:center;gap:9px;background:#ffe1ec;color:var(--primary);border:1px solid #f7c4d8;padding:7px 15px;border-radius:25px;font-size:.84rem;font-weight:700;margin-bottom:18px}
+.pulse{height:9px;width:9px;border-radius:50%;background:var(--accent);animation:pulse 2s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(165,28,88,.5)}70%{box-shadow:0 0 0 10px rgba(165,28,88,0)}100%{box-shadow:0 0 0 0 rgba(165,28,88,0)}}
+.banner h1{font-family:var(--serif);color:var(--dark);font-size:clamp(2rem,4.2vw,3.2rem);line-height:1.15;letter-spacing:-1px;font-weight:800;margin-bottom:16px}
+.banner h1 em{color:var(--accent);font-style:italic;font-weight:600}
+.banner p{color:var(--muted);font-size:1.05rem;max-width:660px}
+.wave{position:absolute;bottom:-1px;left:0;width:100%;height:70px;display:block}
+.deco{position:absolute;right:6%;top:50%;transform:translateY(-50%);width:300px;opacity:.9}
+
+main{padding:0 0 70px;position:relative;z-index:2;margin-top:-50px}
+
+/* Headings */
+.section-heading{text-align:center;max-width:700px;margin:70px auto 34px}
+.section-heading h2{font-family:var(--serif);color:var(--dark);font-size:clamp(1.8rem,3.5vw,2.5rem);line-height:1.2;margin-bottom:8px}
+.section-heading p{color:var(--muted)}
+.kicker{color:var(--accent);font-size:.9rem;font-weight:700;margin-bottom:6px;display:inline-flex;align-items:center;gap:10px}
+.kicker::before,.kicker::after{content:"";width:26px;height:2px;background:var(--rose);border-radius:2px}
+
+/* Cards */
+.card{background:#fff;border:1px solid var(--border);border-radius:22px;padding:28px;box-shadow:var(--shadow)}
+.card h3{color:var(--dark);font-size:1.12rem;margin-bottom:8px}
+.card p{color:var(--muted);font-size:.93rem}
+.ic{width:56px;height:56px;border-radius:16px;display:grid;place-items:center;background:linear-gradient(135deg,var(--rose),var(--primary));color:#fff;flex-shrink:0}
+.ic svg{width:27px;height:27px}
+
+.objective{display:grid;grid-template-columns:auto 1fr;gap:22px;align-items:start;position:relative;overflow:hidden}
+.objective::after{content:"";position:absolute;right:-60px;top:-60px;width:200px;height:200px;border-radius:50%;background:var(--pink)}
+.objective>*{position:relative;z-index:1}
+.objective .ic{width:68px;height:68px;border-radius:20px}
+.objective .ic svg{width:34px;height:34px}
+.objective h3{font-family:var(--serif);font-size:1.4rem}
+
+.problem{border-left:5px solid var(--accent)}
+.problem p{font-size:1rem}
+
+/* Tech */
+.tech-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.tech-card{text-align:center;transition:transform .25s,box-shadow .25s,border-color .25s}
+.tech-card:hover{transform:translateY(-6px);box-shadow:var(--shadow);border-color:#e9b3cb}
+.tech-card .ic{margin:0 auto 16px}
+
+/* Features */
+.feature-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:22px}
+.feature{display:flex;gap:16px;align-items:flex-start;transition:transform .25s,border-color .25s}
+.feature:hover{transform:translateY(-4px);border-color:#e9b3cb}
+.check{min-width:32px;height:32px;border-radius:50%;display:grid;place-items:center;color:#fff;background:linear-gradient(135deg,var(--rose),var(--primary));font-size:.85rem;font-weight:700;margin-top:2px}
+
+/* Methodology */
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;position:relative}
+.steps::before{content:"";position:absolute;top:30px;left:12.5%;right:12.5%;border-top:3px dotted #e5a6c1}
+.step{text-align:center;position:relative}
+.step-number{width:60px;height:60px;margin:0 auto 16px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,var(--accent),var(--primary));color:#fff;font-family:var(--serif);font-size:1.3rem;font-weight:800;box-shadow:0 0 0 8px #ffe5ef,0 10px 22px rgba(125,18,63,.2)}
+.step h3{color:var(--dark);font-size:1.02rem;margin-bottom:6px}
+.step p{color:var(--muted);font-size:.86rem}
+
+/* Developer */
+.developer-card{max-width:720px;margin:auto;text-align:center;padding:0;overflow:hidden}
+.dev-top{height:96px;background:linear-gradient(120deg,var(--dark),var(--primary) 50%,var(--accent));position:relative;overflow:hidden}
+.dev-top::before,.dev-top::after{content:"";position:absolute;border-radius:50%;border:1px solid rgba(255,255,255,.2)}
+.dev-top::before{width:220px;height:220px;top:-120px;left:-40px}
+.dev-top::after{width:300px;height:300px;bottom:-200px;right:-50px;background:rgba(255,255,255,.05)}
+.dev-body{padding:0 30px 36px}
+.avatar{width:104px;height:104px;margin:-52px auto 16px;border-radius:50%;background:linear-gradient(135deg,var(--rose),var(--primary));border:5px solid #fff;color:#fff;display:grid;place-items:center;font-family:var(--serif);font-size:2.2rem;font-weight:800;box-shadow:var(--shadow);position:relative}
+.developer-card h2{font-family:var(--serif);color:var(--dark);font-size:1.7rem}
+.developer-role{color:var(--accent);font-weight:700;font-size:.9rem;margin-bottom:14px}
+.developer-card p{color:var(--muted);font-size:.95rem}
+.project-tag{display:inline-block;margin-top:18px;background:#ffedf4;color:var(--accent);padding:7px 15px;border-radius:25px;font-size:.82rem;font-weight:700}
+
+/* Future */
+.future-box{background:linear-gradient(150deg,var(--primary),var(--accent));color:#fff;border-radius:24px;padding:34px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.future-box::before{content:"";position:absolute;width:300px;height:300px;border-radius:50%;border:1px solid rgba(255,255,255,.18);top:-150px;right:-80px}
+.future-box>*{position:relative}
+.future-box h3{font-family:var(--serif);font-size:1.5rem;margin-bottom:16px}
+.future-box ul{list-style:none;display:grid;gap:12px}
+.future-box li{display:flex;gap:14px;align-items:flex-start;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);border-radius:14px;padding:13px 16px;font-size:.93rem;color:#fff1f6}
+.future-box li b{flex-shrink:0;width:26px;height:26px;border-radius:50%;background:#fff;color:var(--primary);display:grid;place-items:center;font-size:.8rem}
+
+footer{background:var(--dark);color:#fceaf1;padding:28px 0}
+.footer-content{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
+.footer-logo{font-family:var(--serif);font-size:1.35rem;font-weight:800}
+.footer-logo span{color:#ffc1d9}
+.footer-text{color:#e9c4d3;font-size:.85rem}
+.footer-links{display:flex;flex-wrap:wrap;gap:19px;font-size:.87rem}
+.footer-links a:hover{color:#ffc1d9}
+
+@media(max-width:1000px){.deco{display:none}.steps{grid-template-columns:repeat(2,1fr);row-gap:30px}.steps::before{display:none}}
+@media(max-width:850px){.tech-grid{grid-template-columns:repeat(2,1fr)}.feature-grid{grid-template-columns:1fr}}
+@media(max-width:760px){
+.menu-toggle{display:block}
+.nav-links{display:none;position:absolute;top:74px;left:0;right:0;padding:18px 5%;background:var(--dark);flex-direction:column;align-items:stretch;gap:0}
+.nav-links.open{display:flex}
+.nav-links a{display:block;padding:12px 0}
+.footer-content{flex-direction:column;text-align:center}
+}
+@media(max-width:520px){.tech-grid,.steps{grid-template-columns:1fr}.objective{grid-template-columns:1fr}.card{padding:20px}.future-box{padding:22px}.section-heading{margin-top:54px}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+<link rel="stylesheet" href="sidebar.css">
+<script src="sidebar.js" defer></script>
+</head>
+<body>
+<header>
+  <nav class="container">
+    <a href="index.html" class="logo">
+      <svg viewBox="0 0 32 32" fill="none" aria-hidden="true"><rect width="32" height="32" rx="9" fill="#a51c58"/><path d="M5 21l6-7 5 4 6-9 5 5" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="27" cy="13" r="2" fill="#ffc1d9"/></svg>
+      <div>Eco<span>Forecast</span></div>
+    </a>
+    <button class="menu-toggle" id="menuToggle" aria-label="Open navigation menu" aria-expanded="false">☰</button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="dashboard.html">Dashboard</a></li>
+      <li><a href="forecast.html">Forecast</a></li>
+      <li><a href="about.html" class="active">About</a></li>
+    </ul>
+  </nav>
+</header>
+
+<section class="banner">
+  <div class="grid-bg"></div>
+  <svg class="deco" viewBox="0 0 300 200" fill="none" aria-hidden="true">
+    <path d="M10 150 C50 130 70 70 110 90 S170 160 200 110 S260 40 290 30" stroke="#7d123f" stroke-width="4" stroke-linecap="round"/>
+    <path d="M200 110 C230 100 250 60 290 30" stroke="#d75b91" stroke-width="4" stroke-linecap="round" stroke-dasharray="3 10"/>
+    <circle cx="200" cy="110" r="8" fill="#fff" stroke="#7d123f" stroke-width="4"/>
+    <circle cx="150" cy="100" r="95" stroke="#7d123f" stroke-opacity=".1"/>
+  </svg>
+  <div class="container banner-inner">
+    <div class="eyebrow"><span class="pulse"></span>About the project</div>
+    <h1>Energy consumption forecasting using <em>time-series machine learning models</em></h1>
+    <p>An academic machine learning project focused on analyzing historical household electricity consumption and forecasting future energy usage using time-series features and predictive modeling.</p>
+  </div>
+  <svg class="wave" viewBox="0 0 1440 80" preserveAspectRatio="none" aria-hidden="true"><path d="M0 40 C240 90 480 0 720 36 S1200 80 1440 20 V80 H0Z" fill="#fff7fa"/></svg>
+</section>
+
+<main class="container">
+
+  <!-- Overview -->
+  <div class="section-heading" style="margin-top:20px">
+    <div class="kicker">Overview</div>
+    <h2>Project overview</h2>
+    <p>Understanding energy usage through historical data and machine learning.</p>
+  </div>
+
+  <section class="card objective">
+    <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></svg></div>
+    <div>
+      <h3>Project objective</h3>
+      <p>The main objective of this project is to forecast household energy consumption using historical electricity usage data. By applying time-series feature engineering and machine learning algorithms, the system aims to identify consumption patterns and estimate future energy demand. These forecasts can help users understand their energy usage and support more informed energy planning.</p>
+    </div>
+  </section>
+
+  <!-- Problem -->
+  <div class="section-heading">
+    <div class="kicker">The why</div>
+    <h2>Problem statement</h2>
+    <p>Why is energy consumption forecasting useful?</p>
+  </div>
+
+  <section class="card problem">
+    <p>Household electricity consumption varies throughout the day and across different periods. Without analyzing historical patterns, it can be difficult to estimate future energy demand. This project explores how machine learning models can learn from previous consumption values, time-based patterns, and lagged observations to predict future usage.</p>
+  </section>
+
+  <!-- Technology -->
+  <div class="section-heading">
+    <div class="kicker">The toolkit</div>
+    <h2>Technologies used</h2>
+    <p>The tools and technologies involved in the project.</p>
+  </div>
+
+  <section class="tech-grid">
+    <div class="card tech-card">
+      <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 8l-4 4 4 4M16 8l4 4-4 4M14 5l-4 14"/></svg></div>
+      <h3>Python</h3>
+      <p>Used for data processing, feature engineering, model training, and evaluation.</p>
+    </div>
+    <div class="card tech-card">
+      <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M9 4v16"/></svg></div>
+      <h3>Pandas</h3>
+      <p>Used for data cleaning, time-series handling, resampling, and analysis.</p>
+    </div>
+    <div class="card tech-card">
+      <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="2"/><circle cx="6" cy="19" r="2"/><circle cx="18" cy="19" r="2"/><path d="M12 7v4M12 11l-5 6M12 11l5 6"/></svg></div>
+      <h3>XGBoost</h3>
+      <p>A gradient-boosting model used to predict energy consumption from engineered features.</p>
+    </div>
+    <div class="card tech-card">
+      <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/></svg></div>
+      <h3>Matplotlib</h3>
+      <p>Used to visualize consumption trends, predictions, and model performance.</p>
+    </div>
+    <div class="card tech-card">
+      <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h3"/></svg></div>
+      <h3>Jupyter Notebook</h3>
+      <p>Used for exploratory data analysis, experimentation, and model development.</p>
+    </div>
+    <div class="card tech-card">
+      <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></svg></div>
+      <h3>HTML, CSS &amp; JavaScript</h3>
+      <p>Used to build a responsive website to present the project's results.</p>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <div class="section-heading">
+    <div class="kicker">Capabilities</div>
+    <h2>Key features</h2>
+    <p>Core capabilities of the forecasting system.</p>
+  </div>
+
+  <section class="feature-grid">
+    <div class="card feature"><div class="check">✓</div><div><h3>Historical data analysis</h3><p>Analyzes past household electricity consumption to understand usage patterns.</p></div></div>
+    <div class="card feature"><div class="check">✓</div><div><h3>Time-series feature engineering</h3><p>Uses hour, day, month, cyclical time features, lag values, and rolling statistics.</p></div></div>
+    <div class="card feature"><div class="check">✓</div><div><h3>Machine learning prediction</h3><p>Uses an XGBoost regression model to estimate hourly energy consumption.</p></div></div>
+    <div class="card feature"><div class="check">✓</div><div><h3>Performance evaluation</h3><p>Evaluates model predictions using metrics such as MAE, RMSE, and R².</p></div></div>
+    <div class="card feature"><div class="check">✓</div><div><h3>Interactive forecast interface</h3><p>Provides a web interface for exploring forecast horizons and prediction visualizations.</p></div></div>
+    <div class="card feature"><div class="check">✓</div><div><h3>Responsive design</h3><p>Designed to adapt to desktop, tablet, and mobile screen sizes.</p></div></div>
+  </section>
+
+  <!-- Methodology -->
+  <div class="section-heading">
+    <div class="kicker">The process</div>
+    <h2>Project methodology</h2>
+    <p>The general workflow followed in this project.</p>
+  </div>
+
+  <section class="card">
+    <div class="steps">
+      <div class="step"><div class="step-number">1</div><h3>Data collection</h3><p>Obtain historical household electricity consumption data.</p></div>
+      <div class="step"><div class="step-number">2</div><h3>Preprocessing</h3><p>Clean missing values, prepare timestamps, and aggregate hourly usage.</p></div>
+      <div class="step"><div class="step-number">3</div><h3>Model training</h3><p>Build time-based features and train machine learning models.</p></div>
+      <div class="step"><div class="step-number">4</div><h3>Evaluation</h3><p>Evaluate predictions and visualize the model's performance.</p></div>
+    </div>
+  </section>
+
+  <!-- Developer -->
+  <div class="section-heading">
+    <div class="kicker">The team</div>
+    <h2>About the developer</h2>
+    <p>The student behind this project.</p>
+  </div>
+
+  <section class="card developer-card">
+    <div class="dev-top"></div>
+    <div class="dev-body">
+      <div class="avatar">AG</div>
+      <h2>Ashi Gupta</h2>
+      <div class="developer-role">Student | Machine Learning Project</div>
+      <p>Ashi Gupta is developing this academic project to explore machine learning, time-series analysis, and data-driven energy forecasting. The project brings together data preprocessing, feature engineering, predictive modeling, and web development to present energy consumption forecasts through an interactive interface.</p>
+      <span class="project-tag">Energy Consumption Forecasting</span>
+    </div>
+  </section>
+
+  <!-- Future scope -->
+  <div class="section-heading">
+    <div class="kicker">Looking ahead</div>
+    <h2>Future scope</h2>
+    <p>Potential directions for further development.</p>
+  </div>
+
+  <section class="future-box">
+    <h3>What's next?</h3>
+    <ul>
+      <li><b>1</b>Integrate the trained XGBoost model with the website using FastAPI.</li>
+      <li><b>2</b>Replace demo predictions with actual model-generated forecasts.</li>
+      <li><b>3</b>Compare XGBoost with other time-series and machine learning approaches.</li>
+      <li><b>4</b>Improve multi-step forecasting and assess prediction uncertainty.</li>
+      <li><b>5</b>Develop an interactive dashboard with historical and forecast comparisons.</li>
+    </ul>
+  </section>
+
+</main>
+
+<footer>
+  <div class="container footer-content">
+    <a href="index.html" class="footer-logo">Eco<span>Forecast</span></a>
+    <p class="footer-text">Energy Consumption Forecasting | Developed by Ashi Gupta</p>
+    <div class="footer-links">
+      <a href="index.html">Home</a><a href="dashboard.html">Dashboard</a><a href="forecast.html">Forecast</a><a href="about.html">About</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+const menuToggle=document.getElementById("menuToggle"),navLinks=document.getElementById("navLinks");
+menuToggle.addEventListener("click",()=>{const o=navLinks.classList.toggle("open");menuToggle.setAttribute("aria-expanded",o);menuToggle.textContent=o?"✕":"☰"});
+navLinks.querySelectorAll("a").forEach(l=>l.addEventListener("click",()=>{navLinks.classList.remove("open");menuToggle.setAttribute("aria-expanded","false");menuToggle.textContent="☰"}));
+</script>
+</body>
+</html>
+

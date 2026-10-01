@@ -1,0 +1,65 @@
+/* EcoForecast sidebar navigation */
+:root{--side-w:268px}
+body{padding-left:var(--side-w)}
+body>header{display:none!important} /* the sidebar replaces the old top bar */
+
+.eco-side{position:fixed;top:0;bottom:0;left:0;width:var(--side-w);z-index:200;display:flex;flex-direction:column;gap:26px;padding:28px 18px 20px;color:#fff;overflow-y:auto;overflow-x:hidden;
+  background:radial-gradient(circle at 0% 0%,rgba(215,91,145,.5),transparent 45%),linear-gradient(180deg,#9b1a4f 0%,#7d123f 52%,#590c2d 100%);
+  box-shadow:6px 0 30px rgba(55,0,22,.22);font-family:var(--sans,"Plus Jakarta Sans","Segoe UI",Arial,sans-serif)}
+.eco-side::before,.eco-side::after{content:"";position:absolute;border-radius:50%;pointer-events:none}
+.eco-side::before{width:240px;height:240px;border:1px solid rgba(255,255,255,.14);top:-110px;right:-120px}
+.eco-side::after{width:300px;height:300px;border:1px solid rgba(255,255,255,.1);bottom:-170px;left:-150px;background:rgba(255,255,255,.03)}
+.eco-side>*{position:relative;z-index:1}
+
+.eco-logo{display:flex;align-items:center;gap:11px;padding:0 8px;font-family:var(--serif,"Fraunces",Georgia,serif);font-size:1.6rem;font-weight:800;letter-spacing:-.5px;color:#fff;text-decoration:none}
+.eco-logo span{color:#ffc1d9}
+.eco-logo svg{width:36px;height:36px;flex-shrink:0}
+
+.eco-label{font-size:.8rem;font-weight:700;color:#f3b8cf;padding:0 12px;margin-bottom:8px}
+.eco-nav ul{list-style:none;display:grid;gap:6px}
+.eco-nav a{display:flex;align-items:center;gap:14px;padding:12px 14px;border-radius:14px;font-size:.96rem;font-weight:600;color:#ffe3ed;text-decoration:none;transition:background .2s,color .2s,transform .2s}
+.eco-nav a svg{width:21px;height:21px;flex-shrink:0}
+.eco-nav a:hover{background:rgba(255,255,255,.12);color:#fff;transform:translateX(3px)}
+.eco-nav a.active{background:#fff;color:#7d123f;box-shadow:0 10px 24px rgba(40,0,20,.25)}
+.eco-nav a.active svg{color:#a51c58}
+.eco-nav a:focus-visible,.eco-burger:focus-visible{outline:3px solid #ffc1d9;outline-offset:2px}
+
+.eco-card{margin-top:auto;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:18px;padding:16px}
+.eco-card small{display:block;color:#f3b8cf;font-size:.76rem}
+.eco-card b{display:block;font-family:var(--serif,"Fraunces",Georgia,serif);font-size:1.45rem;line-height:1.25}
+.eco-card em{font-style:normal;font-size:.8rem;color:#ffe3ed}
+.eco-card svg{width:100%;height:auto;display:block;margin-top:10px}
+.eco-credit{font-size:.76rem;color:#f3b8cf;padding:0 6px;line-height:1.5}
+
+/* Mobile top bar + overlay */
+.eco-top{display:none;position:fixed;top:0;left:0;right:0;height:60px;z-index:150;align-items:center;gap:14px;padding:0 4%;color:#fff;background:linear-gradient(120deg,#7d123f,#a51c58);box-shadow:0 4px 18px rgba(55,0,22,.25)}
+.eco-burger{width:42px;height:42px;border:1px solid rgba(255,255,255,.45);border-radius:10px;background:transparent;color:#fff;font-size:1.3rem;cursor:pointer}
+.eco-top .eco-logo{padding:0;font-size:1.4rem}
+.eco-top .eco-logo svg{width:30px;height:30px}
+.eco-scrim{position:fixed;inset:0;z-index:190;background:rgba(40,0,20,.5);opacity:0;pointer-events:none;transition:opacity .25s}
+.eco-scrim.show{opacity:1;pointer-events:auto}
+
+@media(max-width:900px){
+  body{padding-left:0;padding-top:60px}
+  html{scroll-padding-top:70px}
+  .eco-top{display:flex}
+  .eco-side{transform:translateX(-105%);transition:transform .3s ease}
+  .eco-side.open{transform:none}
+}
+@media(prefers-reduced-motion:reduce){.eco-side,.eco-scrim,.eco-nav a{transition:none}}
+
+/* Home page: stop the floating chips covering the chart labels */
+.chip.c1{left:auto;right:-14px;bottom:-26px}
+.chip.c2{top:-46px}
+/* Remove the sidebar scrollbar and fix the Menu / links alignment */
+.eco-side{
+  scrollbar-width:none;-ms-overflow-style:none;
+  background:
+    radial-gradient(circle at 0 0,rgba(215,91,145,.5),transparent 45%),
+    radial-gradient(circle at 100% 10px,transparent 119px,rgba(255,255,255,.14) 119.5px,rgba(255,255,255,.14) 120.5px,transparent 121px),
+    radial-gradient(circle at 0 calc(100% + 20px),rgba(255,255,255,.03) 149px,rgba(255,255,255,.1) 150px,transparent 151px),
+    linear-gradient(180deg,#9b1a4f 0%,#7d123f 52%,#590c2d 100%);
+}
+.eco-side::-webkit-scrollbar{display:none}
+.eco-side::before,.eco-side::after{display:none} /* circles are now drawn in the background */
+.eco-side .eco-nav{display:block;min-height:0}

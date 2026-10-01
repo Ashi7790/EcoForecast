@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="EcoForecast - Energy Consumption Forecasting Using Time-Series Machine Learning Models">
+<title>EcoForecast | Smart Energy Forecasting</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,800;1,9..144,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--primary:#7d123f;--dark:#590c2d;--accent:#a51c58;--rose:#d75b91;--soft:#f8c9db;--pink:#fff0f5;--bg:#fff7fa;--white:#fff;--text:#30232a;--muted:#786873;--border:#f1dce6;--shadow:0 14px 40px rgba(125,18,63,.10);--serif:"Fraunces",Georgia,serif;--sans:"Plus Jakarta Sans","Segoe UI",Arial,sans-serif}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);line-height:1.65}
+a{text-decoration:none;color:inherit}
+a:focus-visible,button:focus-visible{outline:3px solid var(--rose);outline-offset:3px}
+.container{width:min(1150px,90%);margin:auto}
+
+/* Header */
+header{background:var(--primary);color:#fff;position:sticky;top:0;z-index:50;box-shadow:0 4px 18px rgba(55,0,22,.18)}
+nav{min-height:74px;display:flex;align-items:center;justify-content:space-between;gap:24px}
+.logo{display:flex;align-items:center;gap:10px;font-family:var(--serif);font-size:1.6rem;font-weight:800;letter-spacing:-.5px}
+.logo span{color:#ffc1d9}
+.logo svg{width:30px;height:30px}
+.nav-links{display:flex;align-items:center;gap:30px;list-style:none}
+.nav-links a{font-size:.95rem;font-weight:600;color:#fff1f6;transition:color .2s}
+.nav-links a:hover,.nav-links a.active{color:#ffc1d9}
+.nav-links a.active{border-bottom:2px solid #ffc1d9;padding-bottom:3px}
+.menu-toggle{display:none;border:1px solid rgba(255,255,255,.45);color:#fff;background:transparent;border-radius:8px;font-size:1.4rem;width:42px;height:42px;cursor:pointer}
+
+/* Hero */
+.hero{position:relative;overflow:hidden;padding:84px 0 130px;background:radial-gradient(circle at 88% 15%,rgba(248,201,219,.8),transparent 32%),radial-gradient(circle at 5% 90%,rgba(215,91,145,.18),transparent 30%),linear-gradient(120deg,#fff7fa,#fff0f5 55%,#ffe2ed)}
+.hero .grid-bg{position:absolute;inset:0;background-image:linear-gradient(rgba(125,18,63,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(125,18,63,.05) 1px,transparent 1px);background-size:44px 44px;mask-image:radial-gradient(ellipse at 70% 40%,#000,transparent 70%);-webkit-mask-image:radial-gradient(ellipse at 70% 40%,#000,transparent 70%)}
+.hero-content{display:grid;grid-template-columns:1fr 1.05fr;align-items:center;gap:50px;position:relative;z-index:1}
+.eyebrow{display:inline-flex;align-items:center;gap:9px;background:#ffe1ec;color:var(--primary);border:1px solid #f7c4d8;padding:7px 15px;border-radius:25px;font-size:.84rem;font-weight:700;margin-bottom:22px}
+.pulse{height:9px;width:9px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 0 rgba(165,28,88,.5);animation:pulse 2s infinite}
+@keyframes pulse{70%{box-shadow:0 0 0 10px rgba(165,28,88,0)}100%{box-shadow:0 0 0 0 rgba(165,28,88,0)}}
+.hero h1{font-family:var(--serif);color:var(--dark);font-size:clamp(2.7rem,5.4vw,4.7rem);line-height:1.06;letter-spacing:-1.5px;font-weight:800;margin-bottom:22px}
+.hero h1 em{display:block;color:var(--accent);font-style:italic;font-weight:600}
+.hero-description{max-width:530px;color:var(--muted);font-size:1.08rem;margin-bottom:30px}
+.hero-buttons{display:flex;flex-wrap:wrap;gap:14px}
+.btn{display:inline-flex;justify-content:center;align-items:center;gap:8px;padding:14px 25px;border-radius:12px;font-size:.96rem;font-weight:700;transition:.2s ease}
+.btn-primary{background:linear-gradient(120deg,var(--primary),var(--accent));color:#fff;box-shadow:0 10px 24px rgba(125,18,63,.25)}
+.btn-primary:hover{transform:translateY(-3px);box-shadow:0 14px 28px rgba(125,18,63,.32)}
+.btn-outline{color:var(--primary);background:rgba(255,255,255,.75);border:1px solid #d9a3ba}
+.btn-outline:hover{background:#fff;transform:translateY(-3px)}
+.tool-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:30px}
+.tool-row span{font-size:.78rem;font-weight:700;color:var(--primary);background:rgba(255,255,255,.8);border:1px solid #edbfd1;border-radius:20px;padding:5px 12px}
+
+/* Hero chart card */
+.hero-visual{position:relative;display:flex;justify-content:center}
+.glow{position:absolute;width:340px;height:340px;border-radius:50%;background:var(--soft);opacity:.7;top:10px;right:0;filter:blur(30px)}
+.chart-card{position:relative;z-index:1;width:100%;max-width:500px;background:#fff;border:1px solid #f3d5e1;border-radius:24px;padding:24px;box-shadow:0 30px 70px rgba(91,12,46,.16)}
+.cc-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px}
+.cc-title{font-weight:800;color:var(--dark)}
+.cc-sub{font-size:.78rem;color:var(--muted)}
+.tag{background:#ffedf4;color:var(--accent);border-radius:20px;padding:4px 11px;font-size:.72rem;font-weight:700;white-space:nowrap}
+.cc-value{font-family:var(--serif);color:var(--primary);font-size:2.4rem;font-weight:800;line-height:1.2}
+.cc-value small{font-family:var(--sans);font-size:.9rem;font-weight:500;color:var(--muted)}
+.chart-card svg{width:100%;height:auto;display:block;margin-top:6px}
+.draw{stroke-dasharray:1;stroke-dashoffset:1;animation:draw 2.2s .3s ease forwards}
+.fade{opacity:0;animation:fade .9s 1.8s ease forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+@keyframes fade{to{opacity:1}}
+.legend{display:flex;gap:18px;font-size:.75rem;color:var(--muted);margin-top:8px}
+.legend i{display:inline-block;width:18px;height:3px;border-radius:3px;background:var(--primary);vertical-align:middle;margin-right:6px}
+.legend i.f{background:repeating-linear-gradient(90deg,var(--rose) 0 5px,transparent 5px 8px)}
+.chip{position:absolute;z-index:2;display:flex;align-items:center;gap:10px;background:#fff;border:1px solid var(--border);border-radius:14px;padding:10px 14px;box-shadow:var(--shadow);font-size:.78rem;color:var(--muted);line-height:1.3}
+.chip b{display:block;color:var(--primary);font-size:.95rem}
+.chip .ic{width:34px;height:34px;border-radius:10px;background:var(--pink);color:var(--accent);display:grid;place-items:center}
+.chip .ic svg{width:18px;height:18px;margin:0}
+.chip.c1{left:-26px;bottom:48px;animation:float 5s ease-in-out infinite}
+.chip.c2{right:-14px;top:-18px;animation:float 6s 1s ease-in-out infinite}
+@keyframes float{50%{transform:translateY(-8px)}}
+.wave{position:absolute;bottom:-1px;left:0;width:100%;height:80px;display:block}
+
+/* Stats */
+.stats{padding:0;margin-top:-52px;position:relative;z-index:3}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);background:#fff;border:1px solid var(--border);border-radius:22px;box-shadow:var(--shadow)}
+.stat{padding:26px 22px;text-align:center;border-right:1px solid var(--border)}
+.stat:last-child{border:0}
+.stat strong{display:block;font-family:var(--serif);font-size:2rem;color:var(--primary);line-height:1.2}
+.stat span{font-size:.86rem;color:var(--muted)}
+
+/* Sections */
+section{padding:84px 0}
+.section-heading{text-align:center;max-width:700px;margin:0 auto 46px}
+.section-kicker{color:var(--accent);font-size:.9rem;font-weight:700;margin-bottom:8px;display:inline-flex;align-items:center;gap:10px}
+.section-kicker::before,.section-kicker::after{content:"";width:26px;height:2px;background:var(--rose);border-radius:2px}
+.section-heading h2{font-family:var(--serif);color:var(--dark);font-size:clamp(2rem,4vw,2.9rem);line-height:1.15;margin-bottom:14px}
+.section-heading p{color:var(--muted)}
+
+/* Overview */
+.overview{background:#fff}
+.overview-grid{display:grid;grid-template-columns:1fr 1fr;gap:50px;align-items:center}
+.overview-text h3{font-family:var(--serif);color:var(--dark);font-size:1.85rem;line-height:1.25;margin-bottom:15px}
+.overview-text p{color:var(--muted);margin-bottom:14px}
+.points{list-style:none;margin-top:22px;display:grid;gap:13px}
+.points li{display:flex;gap:11px;font-weight:600}
+.check{flex-shrink:0;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;color:#fff;background:linear-gradient(135deg,var(--rose),var(--primary));font-size:.75rem}
+.radial-card{background:linear-gradient(145deg,#fff0f5,#ffe0eb);border:1px solid #f5ccdc;border-radius:26px;padding:28px;box-shadow:var(--shadow);text-align:center}
+.radial-card svg{width:100%;max-width:340px;height:auto}
+.radial-card h3{font-family:var(--serif);color:var(--dark);font-size:1.3rem;margin-top:8px}
+.radial-card p{color:#735665;font-size:.88rem;margin-bottom:16px}
+.tech-tags{display:flex;flex-wrap:wrap;gap:9px;justify-content:center}
+.tech-tags span{background:rgba(255,255,255,.85);border:1px solid #edbfd1;color:var(--primary);border-radius:20px;padding:6px 12px;font-size:.8rem;font-weight:700}
+
+/* Features */
+.feature-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.feature-card{background:#fff;border:1px solid var(--border);border-radius:20px;padding:28px;transition:transform .25s,box-shadow .25s,border-color .25s;position:relative;overflow:hidden}
+.feature-card:hover{transform:translateY(-6px);box-shadow:var(--shadow);border-color:#e9b3cb}
+.feature-card.wide{grid-column:span 2;background:linear-gradient(120deg,var(--primary),var(--accent));color:#fff;border:0}
+.feature-card.wide h3{color:#fff}
+.feature-card.wide p{color:#ffe3ed}
+.feature-card.wide .feature-icon{background:rgba(255,255,255,.18);color:#fff}
+.feature-card.wide svg.spark{position:absolute;right:0;bottom:0;width:55%;height:70%;opacity:.55}
+.feature-card.wide .txt{position:relative;max-width:50%}
+.feature-icon{width:52px;height:52px;display:grid;place-items:center;background:var(--pink);color:var(--accent);border-radius:15px;margin-bottom:18px}
+.feature-icon svg{width:26px;height:26px}
+.feature-card h3{color:var(--dark);font-size:1.15rem;margin-bottom:8px}
+.feature-card p{color:var(--muted);font-size:.93rem}
+
+/* Workflow */
+.workflow{background:#fff}
+.workflow-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;position:relative}
+.workflow-grid::before{content:"";position:absolute;top:44px;left:17%;right:17%;border-top:3px dotted #e5a6c1}
+.workflow-step{position:relative;text-align:center;padding:15px 22px}
+.step-number{width:60px;height:60px;display:grid;place-items:center;margin:0 auto 18px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--primary));color:#fff;font-family:var(--serif);font-size:1.3rem;font-weight:800;box-shadow:0 0 0 8px #ffe5ef,0 10px 22px rgba(125,18,63,.2)}
+.workflow-step h3{color:var(--dark);margin-bottom:8px}
+.workflow-step p{color:var(--muted);font-size:.92rem}
+
+/* CTA */
+.cta-section{padding:70px 0;background:var(--bg)}
+.cta-box{position:relative;overflow:hidden;background:linear-gradient(120deg,#590c2d,#7d123f 50%,#a51c58);border-radius:28px;padding:56px 35px;text-align:center;color:#fff;box-shadow:0 20px 44px rgba(125,18,63,.22)}
+.cta-box::before,.cta-box::after{content:"";position:absolute;border-radius:50%;border:1px solid rgba(255,255,255,.18)}
+.cta-box::before{width:300px;height:300px;top:-150px;left:-60px}
+.cta-box::after{width:420px;height:420px;bottom:-250px;right:-80px;background:rgba(255,255,255,.05)}
+.cta-box svg{position:absolute;left:0;bottom:0;width:100%;height:60%;opacity:.25}
+.cta-box>*:not(svg){position:relative;z-index:1}
+.cta-box h2{font-family:var(--serif);font-size:clamp(1.9rem,4vw,2.6rem);margin-bottom:12px}
+.cta-box p{color:#ffe3ed;max-width:640px;margin:0 auto 26px}
+.cta-box .btn{background:#fff;color:var(--primary)}
+.cta-box .btn:hover{background:#ffe6ef;transform:translateY(-3px)}
+
+/* Footer */
+footer{background:var(--dark);color:#fceaf1;padding:28px 0}
+.footer-content{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
+.footer-logo{font-family:var(--serif);font-size:1.35rem;font-weight:800}
+.footer-logo span{color:#ffc1d9}
+.footer-text{color:#e9c4d3;font-size:.85rem}
+.footer-links{display:flex;flex-wrap:wrap;gap:19px;font-size:.87rem}
+.footer-links a:hover{color:#ffc1d9}
+
+@media(max-width:960px){.hero-content{gap:30px}.feature-grid{grid-template-columns:repeat(2,1fr)}.chip.c1{left:-6px}.chip.c2{right:-4px}}
+@media(max-width:760px){
+.menu-toggle{display:block}
+.nav-links{display:none;position:absolute;top:74px;left:0;right:0;padding:18px 5%;background:var(--dark);flex-direction:column;align-items:stretch;gap:0}
+.nav-links.open{display:flex}
+.nav-links a{display:block;padding:12px 0}
+.hero{padding:60px 0 110px}
+.hero-content,.overview-grid,.workflow-grid{grid-template-columns:1fr}
+.hero-content{text-align:center}
+.hero-description{margin-left:auto;margin-right:auto}
+.hero-buttons,.tool-row{justify-content:center}
+.chip{display:none}
+.stats-grid{grid-template-columns:repeat(2,1fr)}
+.stat:nth-child(2){border-right:0}
+.stat:nth-child(-n+2){border-bottom:1px solid var(--border)}
+section{padding:62px 0}
+.workflow-grid::before{display:none}
+.footer-content{flex-direction:column;text-align:center}
+}
+@media(max-width:520px){.feature-grid{grid-template-columns:1fr}.feature-card.wide{grid-column:auto}.feature-card.wide .txt{max-width:100%}.feature-card.wide svg.spark{display:none}.hero-buttons{flex-direction:column}.cc-value{font-size:2rem}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.draw{stroke-dashoffset:0}.fade{opacity:1}}
+</style>
+<link rel="stylesheet" href="sidebar.css">
+<script src="sidebar.js" defer></script>
+</head>
+<body>
+<header>
+  <nav class="container">
+    <a href="index.html" class="logo">
+      <svg viewBox="0 0 32 32" fill="none" aria-hidden="true"><rect width="32" height="32" rx="9" fill="#a51c58"/><path d="M5 21l6-7 5 4 6-9 5 5" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="27" cy="13" r="2" fill="#ffc1d9"/></svg>
+      <div>Eco<span>Forecast</span></div>
+    </a>
+    <button class="menu-toggle" id="menuToggle" aria-label="Open navigation menu" aria-expanded="false">☰</button>
+    <ul class="nav-links" id="navLinks">
+      <li><a class="active" href="index.html">Home</a></li>
+      <li><a href="dashboard.html">Dashboard</a></li>
+      <li><a href="forecast.html">Forecast</a></li>
+      <li><a href="about.html">About</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main>
+<section class="hero">
+  <div class="grid-bg"></div>
+  <div class="container hero-content">
+    <div>
+      <div class="eyebrow"><span class="pulse"></span>Time-series machine learning</div>
+      <h1>Understand energy. <em>Predict tomorrow.</em></h1>
+      <p class="hero-description">Explore household energy consumption patterns and forecast future usage with machine learning. Turn historical data into insights that support smarter energy decisions.</p>
+      <div class="hero-buttons">
+        <a href="dashboard.html" class="btn btn-primary">View dashboard →</a>
+        <a href="about.html" class="btn btn-outline">Discover the project</a>
+      </div>
+      <div class="tool-row"><span>Python</span><span>Pandas</span><span>Scikit-learn</span><span>XGBoost</span></div>
+    </div>
+
+    <div class="hero-visual">
+      <div class="glow"></div>
+      <div class="chip c2"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div><div>Forecast horizon<b>1 hour ahead</b></div></div>
+      <div class="chip c1"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V9M10 19V5M16 19v-7M22 19H2"/></svg></div><div>Model<b>XGBoost</b></div></div>
+
+      <div class="chart-card" role="img" aria-label="Illustrative chart showing past energy use and a forecast for the next hour">
+        <div class="cc-top">
+          <div><div class="cc-title">Energy overview</div><div class="cc-sub">Household power, hourly</div></div>
+          <div class="tag">Illustrative preview</div>
+        </div>
+        <div class="cc-value">1.42 <small>kW average</small></div>
+        <svg viewBox="0 0 420 220" aria-hidden="true">
+          <defs>
+            <linearGradient id="area" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d75b91" stop-opacity=".35"/><stop offset="1" stop-color="#d75b91" stop-opacity="0"/></linearGradient>
+            <linearGradient id="band" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#a51c58" stop-opacity=".28"/><stop offset="1" stop-color="#a51c58" stop-opacity=".08"/></linearGradient>
+          </defs>
+          <g stroke="#f3e3ea" stroke-width="1"><path d="M0 40H420M0 90H420M0 140H420M0 190H420"/></g>
+          <path d="M10 160 C40 140 60 90 90 110 S140 180 170 130 S220 50 250 80 S270 100 280 100 V190 H10Z" fill="url(#area)"/>
+          <path class="fade" d="M280 100 C310 95 330 45 360 52 S400 32 410 22 V72 C400 84 380 94 360 102 S310 145 280 100Z" fill="url(#band)"/>
+          <path class="draw" pathLength="1" d="M10 160 C40 140 60 90 90 110 S140 180 170 130 S220 50 250 80 S270 100 280 100" fill="none" stroke="#7d123f" stroke-width="3.5" stroke-linecap="round"/>
+          <path class="fade" d="M280 100 C310 115 330 62 360 72 S400 52 410 42" fill="none" stroke="#d75b91" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="3 9"/>
+          <line class="fade" x1="280" y1="14" x2="280" y2="190" stroke="#a51c58" stroke-width="1.5" stroke-dasharray="4 4"/>
+          <g class="fade"><circle cx="280" cy="100" r="7" fill="#fff" stroke="#7d123f" stroke-width="3"/><rect x="246" y="2" width="68" height="22" rx="11" fill="#7d123f"/><text x="280" y="17" text-anchor="middle" font-size="11" font-weight="700" fill="#fff" font-family="sans-serif">Now</text></g>
+          <g font-size="11" fill="#9b8a92" font-family="sans-serif"><text x="10" y="210">Morning</text><text x="150" y="210">Afternoon</text><text x="300" y="210">Evening</text></g>
+        </svg>
+        <div class="legend"><span><i></i>Recorded usage</span><span><i class="f"></i>Model estimate</span></div>
+      </div>
+    </div>
+  </div>
+  <svg class="wave" viewBox="0 0 1440 80" preserveAspectRatio="none" aria-hidden="true"><path d="M0 40 C240 90 480 0 720 36 S1200 80 1440 20 V80 H0Z" fill="#fff7fa"/></svg>
+</section>
+
+<section class="stats" aria-label="Project at a glance">
+  <div class="container">
+    <div class="stats-grid">
+      <div class="stat"><strong>1 hour</strong><span>Forecast horizon</span></div>
+      <div class="stat"><strong>XGBoost</strong><span>Regression model</span></div>
+      <div class="stat"><strong>Lag + time</strong><span>Engineered features</span></div>
+      <div class="stat"><strong>MAE · RMSE · R²</strong><span>Evaluation metrics</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="overview" id="overview" style="margin-top:-52px;padding-top:130px">
+  <div class="container">
+    <div class="section-heading">
+      <div class="section-kicker">About EcoForecast</div>
+      <h2>Making energy data meaningful</h2>
+      <p>A machine learning project that studies past household electricity usage to estimate upcoming consumption.</p>
+    </div>
+    <div class="overview-grid">
+      <div class="overview-text">
+        <h3>From historical readings to useful insights</h3>
+        <p>EcoForecast uses historical household electricity consumption data to identify patterns over time. Time-based features and previous readings help a machine learning model estimate near-term energy usage.</p>
+        <p>The project explores how forecasting can support energy awareness, planning, and data-driven decision-making.</p>
+        <ul class="points">
+          <li><span class="check">✓</span> Analyze historical electricity usage</li>
+          <li><span class="check">✓</span> Explore time-based consumption patterns</li>
+          <li><span class="check">✓</span> Generate a one-hour-ahead estimate</li>
+        </ul>
+      </div>
+      <div class="radial-card">
+        <svg viewBox="0 0 240 240" id="radial" role="img" aria-label="Illustrative 24-hour usage pattern drawn as a circular chart">
+          <circle cx="120" cy="120" r="44" fill="#fff" stroke="#f1dce6"/>
+          <text x="120" y="117" text-anchor="middle" font-family="Fraunces,Georgia,serif" font-size="20" font-weight="800" fill="#7d123f">24 h</text>
+          <text x="120" y="135" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#786873">usage cycle</text>
+        </svg>
+        <h3>Patterns repeat. Models learn them.</h3>
+        <p>Illustrative daily rhythm: taller bars mean higher use.</p>
+        <div class="tech-tags"><span>Python</span><span>Pandas</span><span>Scikit-learn</span><span>XGBoost</span><span>Time series</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="features" id="features">
+  <div class="container">
+    <div class="section-heading">
+      <div class="section-kicker">What it offers</div>
+      <h2>Explore the features</h2>
+      <p>Navigate through the project to explore consumption patterns, forecasts, and the machine learning workflow.</p>
+    </div>
+    <div class="feature-grid">
+      <article class="feature-card wide">
+        <svg class="spark" viewBox="0 0 300 120" preserveAspectRatio="none" aria-hidden="true"><path d="M0 100 C40 90 60 40 100 60 S160 110 200 50 S260 20 300 10" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"/><path d="M0 100 C40 90 60 40 100 60 S160 110 200 50 S260 20 300 10 V120 H0Z" fill="#fff" opacity=".15"/></svg>
+        <div class="txt">
+          <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg></div>
+          <h3>Consumption forecasting</h3>
+          <p>View a one-hour-ahead estimate based on historical readings and engineered time-series features.</p>
+        </div>
+      </article>
+      <article class="feature-card">
+        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/></svg></div>
+        <h3>Energy dashboard</h3>
+        <p>Explore visual summaries of historical household power consumption and observe changes over time.</p>
+      </article>
+      <article class="feature-card">
+        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
+        <h3>Time-based patterns</h3>
+        <p>Study how usage varies by hour, day, and season using historical consumption data.</p>
+      </article>
+      <article class="feature-card">
+        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v6c0 1.7 3.6 3 8 3s8-1.300 8-3V5M4 11v6c0 1.700 3.600 3 8 3s8-1.300 8-3v-6"/></svg></div>
+        <h3>Historical analysis</h3>
+        <p>Use past electricity readings to understand trends, variation, and recurring usage behaviour.</p>
+      </article>
+      <article class="feature-card">
+        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r=".6"/></svg></div>
+        <h3>Model evaluation</h3>
+        <p>Assess model performance with regression metrics such as MAE, RMSE, and R².</p>
+      </article>
+      <article class="feature-card">
+        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 21h4M12 3a6 6 0 00-4 10.500c.700.700 1 1.500 1 2.500h6c0-1 .300-1.800 1-2.500A6 6 0 0012 3z"/></svg></div>
+        <h3>Data-driven insights</h3>
+        <p>Present energy consumption information in a clear, accessible interface to support awareness and planning.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="workflow">
+  <div class="container">
+    <div class="section-heading">
+      <div class="section-kicker">How it works</div>
+      <h2>Our forecasting workflow</h2>
+      <p>A structured pipeline transforms raw readings into model-generated estimates.</p>
+    </div>
+    <div class="workflow-grid">
+      <div class="workflow-step"><div class="step-number">1</div><h3>Collect and prepare</h3><p>Load historical household electricity data, process timestamps, and handle missing values.</p></div>
+      <div class="workflow-step"><div class="step-number">2</div><h3>Train the model</h3><p>Create time-based and lag features, then train a machine learning regression model.</p></div>
+      <div class="workflow-step"><div class="step-number">3</div><h3>Estimate and visualize</h3><p>Generate a forecast from available historical readings and display results in the interface.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="cta-section">
+  <div class="container">
+    <div class="cta-box">
+      <svg viewBox="0 0 600 100" preserveAspectRatio="none" aria-hidden="true"><path d="M0 80 C60 70 90 30 150 45 S250 90 310 55 S420 10 480 30 S560 20 600 10" fill="none" stroke="#fff" stroke-width="2"/><path d="M0 90 C80 80 120 55 200 65 S330 85 400 50 S530 40 600 45" fill="none" stroke="#ffc1d9" stroke-width="2" stroke-dasharray="4 8"/></svg>
+      <h2>Explore the energy forecast</h2>
+      <p>Visit the dashboard to explore the project's visualizations, or open the forecast page to see the forecasting interface.</p>
+      <a href="forecast.html" class="btn">Explore forecast →</a>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="container footer-content">
+    <a href="index.html" class="footer-logo">Eco<span>Forecast</span></a>
+    <p class="footer-text">Energy Consumption Forecasting Using Time-Series ML</p>
+    <div class="footer-links">
+      <a href="index.html">Home</a><a href="dashboard.html">Dashboard</a><a href="forecast.html">Forecast</a><a href="about.html">About</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+const menuToggle=document.getElementById("menuToggle"),navLinks=document.getElementById("navLinks");
+menuToggle.addEventListener("click",()=>{const o=navLinks.classList.toggle("open");menuToggle.setAttribute("aria-expanded",o);menuToggle.textContent=o?"✕":"☰"});
+navLinks.querySelectorAll("a").forEach(l=>l.addEventListener("click",()=>{navLinks.classList.remove("open");menuToggle.setAttribute("aria-expanded","false");menuToggle.textContent="☰"}));
+
+// Radial 24-hour usage graphic (illustrative values)
+(function(){
+  const v=[.25,.2,.18,.17,.18,.3,.55,.7,.5,.4,.38,.42,.45,.4,.38,.42,.55,.8,.95,.9,.75,.6,.4,.3];
+  const svg=document.getElementById("radial"),ns="http://www.w3.org/2000/svg";
+  v.forEach((x,i)=>{
+    const a=(i/24)*2*Math.PI-Math.PI/2,r1=54,r2=r1+12+x*58;
+    const l=document.createElementNS(ns,"line");
+    l.setAttribute("x1",120+Math.cos(a)*r1);l.setAttribute("y1",120+Math.sin(a)*r1);
+    l.setAttribute("x2",120+Math.cos(a)*r2);l.setAttribute("y2",120+Math.sin(a)*r2);
+    l.setAttribute("stroke",x>.7?"#7d123f":x>.45?"#a51c58":"#d75b91");
+    l.setAttribute("stroke-width","7");l.setAttribute("stroke-linecap","round");
+    svg.appendChild(l);
+  });
+  [["12 am",120,14],["6 am",232,123],["12 pm",120,236],["6 pm",8,123]].forEach(t=>{
+    const e=document.createElementNS(ns,"text");
+    e.setAttribute("x",t[1]);e.setAttribute("y",t[2]);e.setAttribute("text-anchor","middle");
+    e.setAttribute("font-size","9");e.setAttribute("fill","#786873");e.setAttribute("font-family","sans-serif");
+    e.textContent=t[0];svg.appendChild(e);
+  });
+})();
+</script>
+</body>
+</html>
+
+
+
