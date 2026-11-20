@@ -1,3 +1,5 @@
+
+
 (function () {
   var page = (location.pathname.split("/").pop() || "index.html").toLowerCase();
 
@@ -7,14 +9,24 @@
     fore: '<path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/>',
     about: '<circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/>'
   };
- 
+
+  // Navigation links
+  var links = [
+    ["index.html", "Home", icons.home],
+    ["Dashboard.html", "Dashboard", icons.dash],
+    ["Forecast.html", "Forecast", icons.fore],
+    ["About.html", "About", icons.about]
+  ];
 
   var logoSvg = '<svg viewBox="0 0 32 32" fill="none" aria-hidden="true"><rect width="32" height="32" rx="9" fill="#d75b91"/><path d="M5 21l6-7 5 4 6-9 5 5" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="27" cy="13" r="2" fill="#ffc1d9"/></svg>';
 
   var items = links.map(function (l) {
-    var active = page === l[0];
-    return '<li><a href="' + l[0] + '"' + (active ? ' class="active" aria-current="page"' : "") + '>' +
-      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + l[2] + '</svg>' +
+    var active = page === l[0].toLowerCase();
+
+    return '<li><a href="' + l[0] + '"' +
+      (active ? ' class="active" aria-current="page"' : "") + '>' +
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+      l[2] + '</svg>' +
       l[1] + '</a></li>';
   }).join("");
 
@@ -50,9 +62,27 @@
     burger.setAttribute("aria-expanded", open);
     burger.textContent = open ? "✕" : "☰";
   }
-  burger.addEventListener("click", function () { setOpen(!side.classList.contains("open")); });
-  scrim.addEventListener("click", function () { setOpen(false); });
-  side.querySelectorAll("a").forEach(function (a) { a.addEventListener("click", function () { setOpen(false); }); });
-  document.addEventListener("keydown", function (e) { if (e.key === "Escape") setOpen(false); });
-  window.addEventListener("resize", function () { if (window.innerWidth > 900) setOpen(false); });
+
+  burger.addEventListener("click", function () {
+    setOpen(!side.classList.contains("open"));
+  });
+
+  scrim.addEventListener("click", function () {
+    setOpen(false);
+  });
+
+  side.querySelectorAll("a").forEach(function (a) {
+    a.addEventListener("click", function () {
+      setOpen(false);
+    });
+  });
+
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") setOpen(false);
+  });
+
+  window.addEventListener("resize", function () {
+    if (window.innerWidth > 900) setOpen(false);
+  });
+
 })();
