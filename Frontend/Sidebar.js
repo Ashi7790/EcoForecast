@@ -7,12 +7,7 @@
     fore: '<path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/>',
     about: '<circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/>'
   };
-  var links = [
-    ["index.html", "Home", icons.home],
-    ["dashboard.html", "Dashboard", icons.dash],
-    ["forecast.html", "Forecast", icons.fore],
-    ["about.html", "About", icons.about]
-  ];
+ 
 
   var logoSvg = '<svg viewBox="0 0 32 32" fill="none" aria-hidden="true"><rect width="32" height="32" rx="9" fill="#d75b91"/><path d="M5 21l6-7 5 4 6-9 5 5" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="27" cy="13" r="2" fill="#ffc1d9"/></svg>';
 
