@@ -155,7 +155,8 @@ def predict(request: PredictionRequest):
         "predicted_energy_value": prediction,
         "unit": "same unit as the training target"
     }
-    # Path to the original household electricity dataset
+   
+# Path to the processed hourly history dataset
 DATA_PATH = BASE_DIR / "data" / "raw" / "latest_history.csv"
 
 
@@ -166,8 +167,9 @@ class ForecastRequest(BaseModel):
 def load_latest_history():
     """
     Load the latest 168 consecutive hourly observations
-    from the original household power consumption dataset.
+    from the processed historical dataset.
     """
+
     if not DATA_PATH.exists():
         raise HTTPException(
             status_code=500,
@@ -175,46 +177,56 @@ def load_latest_history():
         )
 
     try:
-        df = pd.read_csv(
-            DATA_PATH,
-            sep=";",
-            usecols=["Date", "Time", "Global_active_power"],
-            na_values=["?"],
-            low_memory=False
+        # Read the already-processed hourly CSV
+        df = pd.read_csv(DATA_PATH)
+
+        required_columns = ["timestamp", "value"]
+
+        if not all(col in df.columns for col in required_columns):
+            raise ValueError(
+                f"Expected columns: {required_columns}. "
+                f"Found: {list(df.columns)}"
+            )
+
+        # Convert columns to appropriate data types
+        df["timestamp"] = pd.to_datetime(
+            df["timestamp"], errors="coerce"
         )
+
+        df["value"] = pd.to_numeric(
+            df["value"], errors="coerce"
+        )
+
+        # Remove invalid rows
+        df = df.dropna(
+            subset=["timestamp", "value"]
+        )
+
+        # Sort chronologically and remove duplicate timestamps
+        df = (
+            df.sort_values("timestamp")
+            .drop_duplicates(subset=["timestamp"], keep="last")
+            .reset_index(drop=True)
+        )
+
+        # Create hourly energy series
+        hourly = (
+            df.set_index("timestamp")["value"]
+            .astype(float)
+            .sort_index()
+        )
+
     except Exception as e:
         raise HTTPException(
             status_code=500,
-            detail=f"Could not read dataset: {str(e)}"
+            detail=f"Could not read dataset: {e}"
         )
-
-    # Combine date and time into one timestamp
-    df["timestamp"] = pd.to_datetime(
-        df["Date"].astype(str) + " " + df["Time"].astype(str),
-        format="%d/%m/%Y %H:%M:%S",
-        errors="coerce"
-    )
-
-    # Convert energy readings to numeric values
-    df["Global_active_power"] = pd.to_numeric(
-        df["Global_active_power"],
-        errors="coerce"
-    )
-
-    df = df.dropna(subset=["timestamp", "Global_active_power"])
-
-    # Calculate hourly mean power
-    hourly = (
-        df.set_index("timestamp")["Global_active_power"]
-        .resample("h")
-        .mean()
-        .dropna()
-    )
 
     if len(hourly) < 168:
         raise HTTPException(
             status_code=500,
-            detail="Not enough valid hourly data in the dataset."
+            detail="Not enough valid hourly observations. "
+                   "At least 168 are required."
         )
 
     # Identify continuous hourly sections
@@ -225,7 +237,7 @@ def load_latest_history():
         .cumsum()
     )
 
-    # Find the most recent section with at least 168 observations
+    # Find sections containing at least 168 consecutive hours
     valid_runs = [
         run for _, run in hourly.groupby(run_ids)
         if len(run) >= 168
@@ -234,12 +246,14 @@ def load_latest_history():
     if not valid_runs:
         raise HTTPException(
             status_code=500,
-            detail="No 168-hour continuous section found in the dataset."
+            detail="No 168-hour continuous section found "
+                   "in the dataset."
         )
 
+    # Select the latest 168 consecutive observations
     latest_run = valid_runs[-1].tail(168)
 
-    # Convert the observations to the format used by the API
+    # Convert to API observation format
     history = [
         HourlyObservation(
             timestamp=timestamp.to_pydatetime(),
@@ -249,6 +263,7 @@ def load_latest_history():
     ]
 
     return history
+
 
 
 @app.get("/history")
